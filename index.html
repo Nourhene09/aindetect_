@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pitch Deck — AinDetect</title>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Sora:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+  :root{--deep:#080F1E;--navy:#0D1F3C;--ocean:#143960;--sky:#0EA5E9;--azure:#38BDF8;--cyan:#22D3EE;--aqua:#67E8F9;--mint:#A5F3FC;--frost:#E0F2FE;--ice:#F0F9FF;--snow:#FAFCFF;--text-dark:#0C4A6E;--text-mid:#475569;--text-muted:#94A3B8;--glass:rgba(255,255,255,0.05);--glass-border:rgba(255,255,255,0.08)}
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:'Outfit',sans-serif;background:var(--deep);overflow:hidden;color:var(--text-mid);user-select:none}
+  #bgCanvas{position:fixed;inset:0;z-index:0;pointer-events:none}
+  .deck::before{content:'';position:fixed;inset:0;z-index:0;opacity:.025;pointer-events:none;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");background-size:200px}
+  .deck{position:relative;width:100vw;height:100vh;z-index:1}
+  .slide{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;padding:48px 40px 80px;opacity:0;visibility:hidden;transition:none}
+  .slide.active{opacity:1;visibility:visible}
+  .slide.active .slide-card{animation:cardIn .6s cubic-bezier(.16,1,.3,1) forwards}
+  .slide.active .anim-item{animation:fadeSlideUp .5s cubic-bezier(.16,1,.3,1) forwards}
+  @keyframes cardIn{from{opacity:0;transform:translateY(30px) scale(.97)}to{opacity:1;transform:translateY(0) scale(1)}}
+  @keyframes fadeSlideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+  .d1{animation-delay:.07s!important;opacity:0}.d2{animation-delay:.14s!important;opacity:0}.d3{animation-delay:.21s!important;opacity:0}.d4{animation-delay:.28s!important;opacity:0}.d5{animation-delay:.35s!important;opacity:0}.d6{animation-delay:.42s!important;opacity:0}.d7{animation-delay:.49s!important;opacity:0}.d8{animation-delay:.56s!important;opacity:0}
+  .slide-card{width:100%;max-width:1400px;height:100%;max-height:920px;border-radius:28px;padding:52px 64px;position:relative;overflow:hidden;display:flex;flex-direction:column;opacity:0}
+  .card-dark{background:linear-gradient(155deg,rgba(13,31,60,.92),rgba(8,15,30,.97));border:1px solid var(--glass-border);backdrop-filter:blur(40px);box-shadow:0 0 0 1px rgba(14,165,233,.04),0 12px 80px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.04);color:var(--frost)}
+  .card-light{background:linear-gradient(165deg,rgba(255,255,255,.97),rgba(240,249,255,.95));border:1px solid rgba(186,230,253,.5);backdrop-filter:blur(40px);box-shadow:0 6px 60px rgba(14,165,233,.05),0 1px 3px rgba(0,0,0,.03),inset 0 1px 0 rgba(255,255,255,.9);color:var(--text-mid)}
+  .card-dark::before{content:'';position:absolute;inset:-1px;border-radius:29px;padding:1px;background:conic-gradient(from var(--border-angle,0deg),transparent 60%,var(--sky) 78%,var(--cyan) 84%,transparent 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.4;animation:rotateBorder 8s linear infinite;pointer-events:none}
+  .card-light::before{content:'';position:absolute;inset:-1px;border-radius:29px;padding:1px;background:conic-gradient(from var(--border-angle,0deg),transparent 65%,rgba(14,165,233,.3) 80%,rgba(34,211,238,.2) 88%,transparent 100%);-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:.5;animation:rotateBorder 10s linear infinite;pointer-events:none}
+  @property --border-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+  @keyframes rotateBorder{to{--border-angle:360deg}}
+  .blob{position:absolute;border-radius:50%;filter:blur(90px);pointer-events:none;animation:blobFloat 10s ease-in-out infinite alternate}
+  .blob-1{width:280px;height:280px;background:rgba(14,165,233,.1);top:-80px;right:-60px}
+  .blob-2{width:200px;height:200px;background:rgba(34,211,238,.08);bottom:-50px;left:-50px;animation-delay:-4s}
+  .blob-3{width:160px;height:160px;background:rgba(56,189,248,.06);top:45%;left:55%;animation-delay:-6s}
+  .card-light .blob-1{background:rgba(14,165,233,.06)}.card-light .blob-2{background:rgba(34,211,238,.04)}.card-light .blob-3{background:rgba(56,189,248,.03)}
+  @keyframes blobFloat{0%{transform:translate(0,0) scale(1)}100%{transform:translate(15px,-15px) scale(1.08)}}
+  .badge{display:inline-flex;align-items:center;gap:8px;padding:7px 16px;font-size:12px;letter-spacing:3px;text-transform:uppercase;font-weight:700;margin-bottom:20px;border-radius:8px;position:relative;z-index:2;align-self:flex-start}
+  .card-dark .badge{background:rgba(14,165,233,.08);border:1px solid rgba(14,165,233,.15);color:var(--azure)}
+  .card-light .badge{background:rgba(14,165,233,.06);border:1px solid rgba(14,165,233,.12);color:var(--sky)}
+  .badge-dot{width:6px;height:6px;border-radius:50%;background:var(--sky);box-shadow:0 0 8px var(--sky);animation:pulse 2s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.4;transform:scale(.7)}}
+  .s-title{font-family:'Sora',sans-serif;font-size:38px;font-weight:800;line-height:1.2;margin-bottom:8px;position:relative;z-index:2}
+  .card-dark .s-title{color:#fff}.card-light .s-title{color:var(--text-dark)}
+  .s-subtitle{font-size:14px;font-weight:600;letter-spacing:2px;text-transform:uppercase;opacity:.4;margin-bottom:24px;position:relative;z-index:2}
+  .field{position:relative;z-index:2;font-size:17px;border:none;border-bottom:2px dashed rgba(148,163,184,.18);border-radius:0;padding:8px 4px;transition:all .25s ease;cursor:text;min-height:36px;outline:none;line-height:1.65;background:transparent;word-break:break-word}
+  .field:hover{border-bottom-color:rgba(14,165,233,.3);background:rgba(14,165,233,.015)}
+  .field:focus{border-bottom:2px solid var(--sky);background:rgba(14,165,233,.03);box-shadow:0 2px 0 0 var(--sky)}
+  .card-dark .field{color:var(--frost)}.card-light .field{color:var(--text-mid)}
+  .field::before{content:attr(data-placeholder);opacity:.25;font-style:italic;pointer-events:none}
+  .field:empty::before{display:block}.field:not(:empty)::before{display:none}
+  .f-xl{font-family:'Sora',sans-serif;font-size:46px;font-weight:900;min-height:90px;padding:16px 0}
+  .card-dark .f-xl{color:#fff}.card-light .f-xl{color:var(--text-dark)}
+  .f-lg{font-size:19px;font-weight:500;min-height:56px}.f-md{font-size:17px}.f-sm{font-size:14px;min-height:28px;padding:6px 4px}
+  .f-tag{font-size:20px;font-weight:600;opacity:.85;min-height:48px}
+  .no-border .field,.no-border .field:hover,.no-border .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent;padding:4px}
+  .contact-rows{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:2}
+  .c-row{display:flex;align-items:center;gap:14px;padding:14px 16px;border-radius:16px;border:1px solid transparent;transition:all .3s cubic-bezier(.16,1,.3,1)}
+  .c-row:hover{border-color:rgba(14,165,233,.12);background:rgba(14,165,233,.025);transform:translateX(4px)}
+  .c-icon{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0;transition:transform .3s}
+  .c-row:hover .c-icon{transform:scale(1.1) rotate(-5deg)}
+  .card-dark .c-icon{background:rgba(14,165,233,.08);color:var(--azure)}.card-light .c-icon{background:rgba(14,165,233,.06);color:var(--sky)}
+  .c-row .field{padding:4px;min-height:24px;font-size:14px}
+  .c-row .field:hover,.c-row .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .team-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:16px;position:relative;z-index:2;flex:1;align-content:start}
+  .t-card{border-radius:20px;padding:0;display:flex;flex-direction:column;overflow:hidden;border:1px solid;transition:all .4s cubic-bezier(.16,1,.3,1);position:relative}
+  .t-card::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(14,165,233,.06),transparent 60%);opacity:0;transition:opacity .4s}
+  .t-card:hover::before{opacity:1}.t-card:hover{transform:translateY(-5px)}
+  .card-dark .t-card{background:var(--glass);border-color:var(--glass-border)}.card-dark .t-card:hover{box-shadow:0 10px 40px rgba(14,165,233,.08);border-color:rgba(14,165,233,.2)}
+  .card-light .t-card{background:white;border-color:rgba(186,230,253,.4)}.card-light .t-card:hover{box-shadow:0 10px 40px rgba(14,165,233,.06);border-color:rgba(14,165,233,.3)}
+  .t-header{display:flex;align-items:center;gap:16px;padding:20px 22px 16px;position:relative;z-index:1}
+  .t-avatar{width:52px;height:52px;border-radius:14px;display:flex;align-items:center;justify-content:center;font-size:18px;background:linear-gradient(135deg,var(--sky),var(--cyan));color:white;flex-shrink:0;box-shadow:0 4px 16px rgba(14,165,233,.25);position:relative}
+  .t-header-fields{flex:1;display:flex;flex-direction:column;gap:2px}
+  .t-name{font-weight:700;font-size:16px;position:relative;z-index:1}
+  .t-profile{font-size:12px;opacity:.45;position:relative;z-index:1;letter-spacing:.5px}
+  .t-divider{height:1px;margin:0 22px;background:linear-gradient(90deg,rgba(14,165,233,.15),rgba(14,165,233,.05));position:relative;z-index:1}
+  .card-light .t-divider{background:linear-gradient(90deg,rgba(14,165,233,.12),rgba(14,165,233,.03))}
+  .t-body{padding:14px 22px 20px;display:flex;flex-direction:column;gap:10px;position:relative;z-index:1}
+  .t-body-label{font-size:9px;font-weight:800;letter-spacing:2.5px;text-transform:uppercase;opacity:.3;margin-bottom:2px}
+  .t-card .field{padding:3px 4px;min-height:22px;border:none;border-bottom:none}
+  .t-card .field:hover,.t-card .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .t-role-text{font-size:13px;line-height:1.5;position:relative;z-index:1;opacity:.8;font-weight:500}
+  .t-skill-text{font-size:12px;line-height:1.6;position:relative;z-index:1;opacity:.6}
+  .stat-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;position:relative;z-index:2;flex:1;align-content:start}
+  .stat-card{border-radius:20px;padding:26px;border:1px solid;display:flex;flex-direction:column;gap:6px;transition:all .4s;position:relative;overflow:hidden}
+  .stat-card:hover{transform:translateY(-3px) scale(1.005)}
+  .card-dark .stat-card{background:var(--glass);border-color:var(--glass-border)}.card-dark .stat-card:hover{border-color:rgba(14,165,233,.25);box-shadow:0 8px 30px rgba(14,165,233,.06)}
+  .card-light .stat-card{background:white;border-color:rgba(186,230,253,.4)}.card-light .stat-card:hover{border-color:rgba(14,165,233,.3);box-shadow:0 8px 30px rgba(14,165,233,.06)}
+  .stat-icon{width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:14px;margin-bottom:4px}
+  .card-dark .stat-icon{background:rgba(14,165,233,.1);color:var(--azure)}.card-light .stat-icon{background:rgba(14,165,233,.06);color:var(--sky)}
+  .stat-num{font-family:'Sora',sans-serif;font-size:38px;font-weight:900;line-height:1;background:linear-gradient(135deg,var(--azure),var(--cyan));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+  .stat-card .field{padding:3px 4px;min-height:22px;font-size:13px;border:none;border-bottom:none}
+  .stat-card .field:hover,.stat-card .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .chip-row{display:flex;flex-wrap:wrap;gap:10px;position:relative;z-index:2}
+  .chip{padding:10px 20px;border-radius:100px;display:flex;align-items:center;gap:8px;font-weight:600;font-size:13px;border:1px solid;transition:all .3s;cursor:default}
+  .chip:hover{transform:translateY(-2px) scale(1.02)}
+  .card-dark .chip{background:rgba(14,165,233,.06);border-color:rgba(14,165,233,.15);color:var(--azure)}.card-dark .chip:hover{background:rgba(14,165,233,.12);box-shadow:0 4px 20px rgba(14,165,233,.08)}
+  .card-light .chip{background:white;border-color:rgba(186,230,253,.5);color:var(--sky)}.card-light .chip:hover{background:rgba(14,165,233,.03);box-shadow:0 4px 20px rgba(14,165,233,.06)}
+  .chip i{font-size:13px}
+  .swot-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;position:relative;z-index:2}
+  .swot-box{border-radius:16px;padding:16px 18px;border:1px solid;border-left:4px solid;transition:all .3s}
+  .swot-box:hover{transform:scale(1.015)}
+  .card-dark .swot-box{background:var(--glass);border-color:var(--glass-border)}.card-light .swot-box{background:white;border-color:rgba(186,230,253,.4)}
+  .sw-s{border-left-color:#10B981!important}.sw-w{border-left-color:#EF4444!important}.sw-o{border-left-color:#0EA5E9!important}.sw-t{border-left-color:#F59E0B!important}
+  .swot-label{font-family:'Sora',sans-serif;font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;margin-bottom:6px;display:flex;align-items:center;gap:6px}
+  .sw-s .swot-label{color:#10B981}.sw-w .swot-label{color:#EF4444}.sw-o .swot-label{color:#0EA5E9}.sw-t .swot-label{color:#F59E0B}
+  .swot-box .field{padding:3px 4px;min-height:20px;font-size:13px;border:none;border-bottom:none}
+  .swot-box .field:hover,.swot-box .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .comp-list{display:flex;flex-direction:column;gap:8px;position:relative;z-index:2}
+  .comp-row{display:flex;align-items:center;gap:12px;padding:12px 16px;border-radius:14px;border:1px solid;transition:all .3s}
+  .comp-row:hover{transform:translateX(5px)}
+  .card-dark .comp-row{background:var(--glass);border-color:var(--glass-border)}.card-light .comp-row{background:white;border-color:rgba(186,230,253,.4)}
+  .comp-pip{width:8px;height:8px;border-radius:50%;flex-shrink:0;background:var(--sky);box-shadow:0 0 8px rgba(14,165,233,.3)}
+  .comp-row .field{flex:1;padding:3px 4px;min-height:22px;font-size:14px;border:none;border-bottom:none}
+  .comp-row .field:hover,.comp-row .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .diff-box{border-radius:14px;padding:16px 20px;border:1px solid;position:relative;z-index:2;margin-top:6px}
+  .card-dark .diff-box{background:rgba(34,211,238,.03);border-color:rgba(34,211,238,.1)}.card-light .diff-box{background:rgba(14,165,233,.02);border-color:rgba(186,230,253,.4)}
+  .ip-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;position:relative;z-index:2;flex:1;align-content:start}
+  .ip-card{border-radius:18px;padding:22px;border:1px solid;display:flex;flex-direction:column;gap:6px;transition:all .4s}
+  .ip-card:hover{transform:translateY(-3px)}
+  .card-dark .ip-card{background:var(--glass);border-color:var(--glass-border)}.card-dark .ip-card:hover{box-shadow:0 8px 30px rgba(14,165,233,.06)}
+  .card-light .ip-card{background:white;border-color:rgba(186,230,253,.4)}.card-light .ip-card:hover{box-shadow:0 8px 30px rgba(14,165,233,.06)}
+  .ip-ico{width:40px;height:40px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:15px}
+  .card-dark .ip-ico{background:rgba(14,165,233,.08);color:var(--azure)}.card-light .ip-ico{background:rgba(14,165,233,.06);color:var(--sky)}
+  .ip-lbl{font-weight:700;font-size:14px}.card-dark .ip-lbl{color:var(--frost)}.card-light .ip-lbl{color:var(--text-dark)}
+  .ip-card .field{padding:3px 4px;min-height:22px;font-size:13px;border:none;border-bottom:none}
+  .ip-card .field:hover,.ip-card .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .proto-list{display:flex;flex-direction:column;gap:10px;position:relative;z-index:2;flex:1}
+  .proto-row{display:flex;align-items:center;gap:16px;padding:18px 22px;border-radius:16px;border:1px solid;transition:all .3s}
+  .proto-row:hover{transform:translateX(5px)}
+  .card-dark .proto-row{background:var(--glass);border-color:var(--glass-border)}.card-light .proto-row{background:white;border-color:rgba(186,230,253,.4)}
+  .proto-row i{font-size:20px;color:var(--sky);flex-shrink:0;transition:transform .3s}
+  .proto-row:hover i{transform:scale(1.1)}
+  .proto-row .field{flex:1;padding:3px 4px;min-height:22px;font-size:14px;border:none;border-bottom:none}
+  .proto-row .field:hover,.proto-row .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .mkt-segs{display:flex;gap:12px;position:relative;z-index:2;flex-wrap:wrap}
+  .mkt-seg{flex:1;min-width:170px;border-radius:20px;padding:26px 18px;border:1px solid;text-align:center;transition:all .4s}
+  .mkt-seg:hover{transform:translateY(-4px)}
+  .card-dark .mkt-seg{background:var(--glass);border-color:var(--glass-border)}.card-dark .mkt-seg:hover{box-shadow:0 8px 30px rgba(14,165,233,.06)}
+  .card-light .mkt-seg{background:white;border-color:rgba(186,230,253,.4)}.card-light .mkt-seg:hover{box-shadow:0 8px 30px rgba(14,165,233,.06)}
+  .mkt-ico{font-size:26px;color:var(--sky);margin-bottom:8px;display:block}
+  .mkt-lbl{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.4;margin-bottom:6px}
+  .mkt-seg .field{text-align:center;padding:3px 4px;min-height:22px;font-size:13px;border:none;border-bottom:none}
+  .mkt-seg .field:hover,.mkt-seg .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .bm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;position:relative;z-index:2}
+  .bm-card{border-radius:18px;padding:22px 16px;border:1px solid;text-align:center;display:flex;flex-direction:column;align-items:center;gap:6px;transition:all .4s}
+  .bm-card:hover{transform:translateY(-3px) scale(1.01)}
+  .card-dark .bm-card{background:var(--glass);border-color:var(--glass-border)}.card-light .bm-card{background:white;border-color:rgba(186,230,253,.4)}
+  .bm-ico{font-size:24px;color:var(--sky)}
+  .bm-lbl{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.4}
+  .bm-card .field{text-align:center;padding:3px 4px;min-height:22px;font-size:13px;border:none;border-bottom:none}
+  .bm-card .field:hover,.bm-card .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .timeline{display:flex;gap:0;position:relative;z-index:2;padding-top:16px}
+  .timeline::before{content:'';position:absolute;top:26px;left:60px;right:60px;height:3px;background:linear-gradient(90deg,var(--sky),var(--cyan),var(--aqua));border-radius:2px;opacity:.5}
+  .tl-item{flex:1;display:flex;flex-direction:column;align-items:center;text-align:center;position:relative;padding:0 10px}
+  .tl-dot{width:18px;height:18px;border-radius:50%;background:var(--sky);border:3px solid;margin-bottom:16px;position:relative;z-index:1;box-shadow:0 0 12px rgba(14,165,233,.35);transition:transform .3s}
+  .tl-dot:hover{transform:scale(1.3)}
+  .card-dark .tl-dot{border-color:var(--deep)}.card-light .tl-dot{border-color:var(--ice)}
+  .tl-lbl{font-family:'Sora',sans-serif;font-size:13px;font-weight:700;margin-bottom:8px;color:var(--azure)}
+  .tl-item .field{width:100%;text-align:center;padding:3px 4px;min-height:22px;font-size:13px;border:none;border-bottom:none}
+  .tl-item .field:hover,.tl-item .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .res-box{border-radius:16px;padding:18px 20px;border:1px solid;position:relative;z-index:2;margin-top:14px}
+  .card-dark .res-box{background:var(--glass);border-color:var(--glass-border)}.card-light .res-box{background:white;border-color:rgba(186,230,253,.4)}
+  .res-lbl{font-size:10px;font-weight:800;letter-spacing:2px;text-transform:uppercase;opacity:.4;margin-bottom:6px}
+  .res-box .field{padding:3px 4px;min-height:22px;font-size:14px;border:none;border-bottom:none}
+  .res-box .field:hover,.res-box .field:focus{border:none;border-bottom:none;box-shadow:none;background:transparent}
+  .logo-box{width:380px;height:300px;border-radius:28px;border:2px dashed rgba(14,165,233,.2);display:flex;align-items:center;justify-content:center;flex-direction:column;gap:12px;transition:all .4s;cursor:pointer;position:relative;z-index:2;flex-shrink:0;overflow:hidden;background:rgba(14,165,233,.02)}
+  .logo-box:hover{border-color:var(--sky);background:rgba(14,165,233,.04);transform:scale(1.02);box-shadow:0 0 40px rgba(14,165,233,.1)}
+  .logo-box img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:10;border-radius:inherit;padding:20px}
+  .logo-box i{font-size:48px;color:var(--sky);opacity:.25}
+  .logo-box span{font-size:12px;color:var(--sky);opacity:.3;letter-spacing:3px;text-transform:uppercase;font-weight:700}
+  .ty-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:20px;flex:1;position:relative;z-index:2}
+  .ty-title{font-family:'Sora',sans-serif;font-size:68px;font-weight:900;background:linear-gradient(135deg,var(--azure) 0%,var(--cyan) 40%,var(--aqua) 70%,var(--mint) 100%);background-size:200% 200%;-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:gradShift 4s ease-in-out infinite}
+  @keyframes gradShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+  .ty-sub{font-size:17px;opacity:.45;max-width:480px;line-height:1.7}
+  .progress-track{position:fixed;top:0;left:0;right:0;height:3px;background:rgba(14,165,233,.06);z-index:200}
+  .progress-fill{height:100%;background:linear-gradient(90deg,var(--sky),var(--cyan),var(--aqua));border-radius:0 2px 2px 0;transition:width .4s cubic-bezier(.16,1,.3,1);box-shadow:0 0 10px rgba(14,165,233,.4)}
+  .topbar{position:fixed;top:3px;left:0;right:0;height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;z-index:150;background:rgba(8,15,30,.7);backdrop-filter:blur(20px);border-bottom:1px solid rgba(14,165,233,.04)}
+  .topbar-l{display:flex;align-items:center;gap:8px;font-size:13px;color:var(--azure);font-weight:700;letter-spacing:2px;text-transform:uppercase}
+  .topbar-l i{font-size:13px}
+  .topbar-r{display:flex;align-items:center;gap:8px}
+  .tb-btn{padding:7px 16px;border-radius:8px;border:1px solid rgba(14,165,233,.15);background:rgba(14,165,233,.05);color:var(--azure);font-size:13px;font-weight:700;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .2s;font-family:'Outfit',sans-serif;letter-spacing:.5px}
+  .tb-btn:hover{background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3);transform:translateY(-1px)}
+  .tb-btn.primary{background:rgba(14,165,233,.15);border-color:rgba(14,165,233,.3)}.tb-btn.primary:hover{background:rgba(14,165,233,.25);border-color:rgba(14,165,233,.5)}
+  .bottomnav{position:fixed;bottom:0;left:0;right:0;height:56px;display:flex;align-items:center;justify-content:center;gap:12px;z-index:150;background:rgba(8,15,30,.75);backdrop-filter:blur(20px);border-top:1px solid rgba(14,165,233,.04)}
+  .bn-btn{width:38px;height:38px;border-radius:10px;border:1px solid rgba(14,165,233,.12);background:rgba(14,165,233,.05);color:var(--azure);font-size:13px;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .25s}
+  .bn-btn:hover:not(:disabled){background:rgba(14,165,233,.12);border-color:rgba(14,165,233,.3);transform:scale(1.06)}.bn-btn:disabled{opacity:.15;cursor:not-allowed}
+  .bn-dots{display:flex;gap:4px;align-items:center}
+  .bn-dot{width:7px;height:7px;border-radius:50%;background:rgba(14,165,233,.12);border:none;cursor:pointer;transition:all .35s}
+  .bn-dot.on{width:28px;border-radius:4px;background:var(--sky);box-shadow:0 0 8px rgba(14,165,233,.35)}.bn-dot:hover:not(.on){background:rgba(14,165,233,.3)}
+  .bn-counter{font-family:'Sora',sans-serif;font-size:11px;color:var(--azure);font-weight:600;min-width:40px;text-align:center;opacity:.6}
+  .sidepills{position:fixed;right:10px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;gap:3px;z-index:100;opacity:0;transition:opacity .3s}
+  .deck:hover .sidepills{opacity:1}
+  .sp{width:30px;height:18px;border-radius:4px;border:1px solid rgba(14,165,233,.08);background:rgba(14,165,233,.03);cursor:pointer;transition:all .25s;display:flex;align-items:center;justify-content:center;font-size:7px;color:rgba(14,165,233,.25);font-weight:700}
+  .sp.on{border-color:rgba(14,165,233,.35);background:rgba(14,165,233,.12);color:var(--azure)}.sp:hover:not(.on){border-color:rgba(14,165,233,.2);background:rgba(14,165,233,.08)}
+  .toast{position:fixed;top:54px;left:50%;transform:translateX(-50%) translateY(-14px);padding:10px 22px;border-radius:12px;background:rgba(8,15,30,.92);border:1px solid rgba(14,165,233,.2);color:var(--azure);font-size:13px;font-weight:600;z-index:300;opacity:0;transition:all .35s;backdrop-filter:blur(16px);pointer-events:none;display:flex;align-items:center;gap:8px;white-space:nowrap}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+  @media(max-width:768px){.slide{padding:14px 10px 68px}.slide-card{padding:24px 18px;border-radius:18px}.s-title{font-size:22px}.f-xl{font-size:28px;min-height:60px}.contact-rows{grid-template-columns:1fr}.stat-grid,.swot-grid,.ip-grid{grid-template-columns:1fr}.bm-grid{grid-template-columns:1fr}.team-grid{grid-template-columns:1fr}.ty-title{font-size:44px}.timeline{flex-direction:column;gap:14px}.timeline::before{display:none}.mkt-segs{flex-direction:column}.sidepills{display:none}.logo-box{width:100%;height:180px}}
+  @media print{.bottomnav,.topbar,.sidepills,.progress-track,#bgCanvas,.toast{display:none!important}.slide{position:relative!important;opacity:1!important;visibility:visible!important;page-break-after:always}.slide-card{opacity:1!important}.anim-item{opacity:1!important;animation:none!important}.deck{overflow:visible;height:auto}}
+  @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation-duration:.01s!important;transition-duration:.01s!important}#bgCanvas{display:none}}
+</style>
+</head>
+<body>
+<canvas id="bgCanvas"></canvas>
+<div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+
+<header class="topbar">
+  <div class="topbar-l"><i class="fas fa-bolt"></i> Pitch Deck — AinDetect</div>
+  <div class="topbar-r">
+    <!-- Le bouton de sauvegarde a été supprimé ici -->
+    <button class="tb-btn" onclick="toggleFS()" aria-label="Plein ecran"><i class="fas fa-expand"></i></button>
+  </div>
+</header>
+
+<style>
+  /* Agrandissement de l'écriture pour la slide active */
+  .slide.active .s-title { 
+    font-size: 3.2rem !important; 
+    line-height: 1.2;
+    margin-bottom: 20px;
+  }
+  .slide.active .s-subtitle { 
+    font-size: 1.5rem !important; 
+    opacity: 0.9;
+  }
+  .slide.active .field.f-lg {
+    font-size: 1.4rem !important;
+    line-height: 1.6;
+  }
+  /* Style pour les images intégrées dans les slides */
+  .slide-img-container {
+    margin-top: 20px;
+    width: 100%;
+    max-height: 250px;
+    display: flex;
+    justify-content: center;
+    border-radius: 16px;
+    overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.2);
+  }
+  .slide-img-container img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+</style>
+
+<div class="toast" id="toast"><i class="fas fa-check-circle"></i><span id="toastTxt"></span></div>
+
+<main class="deck" id="deck">
+
+<!-- S0: Accueil AinDetect avec Rotation Forcée -->
+<section class="slide active" data-i="0">
+  <div class="slide-card card-dark" style="justify-content:center;align-items:center;text-align:center; position: relative; overflow: hidden; padding: 40px;">
+    
+    <!-- IMAGE EN HAUT À DROITE (Avion) -->
+    <div class="anim-item d1" style="position: absolute !important; top: 20px !important; right: 20px !important; z-index: 20 !important; transform: rotate(15deg) !important; display: block !important;">
+      <img src="https://static.vecteezy.com/system/resources/previews/026/382/236/non_2x/origami-paper-plane-illustration-paper-rocket-aerogami-paper-flyer-paper-airplane-or-aero-plane-image-vector.jpg" 
+           style="height: 150px; width: auto; border-radius: 10px; filter: drop-shadow(0 4px 15px rgba(0,0,0,0.5));">
+    </div>
+
+    <!-- IMAGE EN BAS À GAUCHE (Fond d'oeil / Concept) -->
+    <div class="anim-item d6" style="position: absolute !important; bottom: 20px !important; left: -20px !important; z-index: 1 !important; transform: rotate(-15deg) !important; opacity: 0.6 !important; display: block !important;">
+      <img src="https://media.licdn.com/dms/image/v2/C4E12AQEjU3nim6wOFg/article-cover_image-shrink_720_1280/article-cover_image-shrink_720_1280/0/1618908179833?e=2147483647&v=beta&t=0v819Khq4r7inBE7SXa6WiU9pFTJzjAAKRP5vlsVPZo" 
+           style="width: 300px; height: auto; border-radius: 20px; box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+    </div>
+
+    <div style="position:relative;z-index:5;display:flex;flex-direction:column;align-items:center;gap:20px;">
+      <div style="font-size:12px;font-weight:800;letter-spacing:4px;text-transform:uppercase;color:var(--azure);opacity:.8;">Comité National de Labellisation</div>
+      
+      <h1 style="font-family:'Sora',sans-serif;font-size:60px;font-weight:900;color:#fff;line-height:1.05; margin: 0;">PITCH DECK</h1>
+      
+      <div style="font-size:20px;color:var(--azure);font-weight:500;max-width:500px;line-height:1.5;">AinDetect : Intelligence Artificielle pour la détection précoce des pathologies oculaires</div>
+
+      <!-- Image centrale principale -->
+      <div style="max-width: 350px; margin-top: 5px;">
+         <img src="https://www.mycmmag.com/wp-content/uploads/2014/02/startup-entreprise-business.png" 
+              style="width: 100%; height: auto; border-radius: 15px; box-shadow: 0 15px 35px rgba(0,0,0,0.3);">
+      </div>
+
+      <button onclick="goTo(1)" style="margin-top:15px;padding:12px 30px;border-radius:12px;background:rgba(14,165,233,0.2);color:var(--azure);font-size:14px;font-weight:700;cursor:pointer;border:1px solid rgba(14,165,233,0.3);">
+        Commencer <i class="fas fa-arrow-right" style="margin-left:8px;"></i>
+      </button>
+    </div>
+  </div>
+</section>
+
+  <!-- S1 -->
+  <section class="slide" data-i="1"><div class="slide-card card-dark"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 01 — Presentation Generale</div><div style="display:flex;gap:32px;flex:1;align-items:center;position:relative;z-index:2;"><div style="flex:1;display:flex;flex-direction:column;gap:12px;"><div class="field f-xl anim-item d2" contenteditable="true" data-key="projectName" data-placeholder="Titre du Projet"></div><div class="field f-tag anim-item d3" contenteditable="true" data-key="projectTagline" data-placeholder="Sous-titre..."></div></div><div style="display:flex;flex-direction:column;align-items:center;gap:6px;"><div class="logo-box anim-item d4" id="logoBox" onclick="document.getElementById('logoInput').click()"><i class="fas fa-image" id="logoIcon"></i><span id="logoText">Logo du projet</span><img id="logoPreview" src="" alt="Logo" style="display:none;"></div><input type="file" id="logoInput" accept="image/*" style="display:none" onchange="handleLogo(event)"></div></div></div></section>
+
+  <!-- S2 -->
+  <section class="slide" data-i="2"><div class="slide-card card-dark"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 01 — Contact</div><div class="s-title anim-item d2">Informations de contact</div><div class="contact-rows"><div class="c-row anim-item d3"><div class="c-icon"><i class="fas fa-user"></i></div><div class="field f-sm" contenteditable="true" data-key="contactName" data-placeholder="Nom"></div></div><div class="c-row anim-item d4"><div class="c-icon"><i class="fas fa-briefcase"></i></div><div class="field f-sm" contenteditable="true" data-key="contactRole" data-placeholder="Fonction"></div></div><div class="c-row anim-item d5"><div class="c-icon"><i class="fas fa-envelope"></i></div><div class="field f-sm" contenteditable="true" data-key="contactEmail" data-placeholder="Email"></div></div><div class="c-row anim-item d6"><div class="c-icon"><i class="fas fa-phone"></i></div><div class="field f-sm" contenteditable="true" data-key="contactPhone" data-placeholder="Telephone"></div></div><div class="c-row anim-item d7"><div class="c-icon"><i class="fas fa-globe"></i></div><div class="field f-sm" contenteditable="true" data-key="contactWebsite" data-placeholder="Site web"></div></div><div class="c-row anim-item d8"><div class="c-icon"><i class="fas fa-share-nodes"></i></div><div class="field f-sm" contenteditable="true" data-key="contactSocial" data-placeholder="Reseaux sociaux"></div></div></div></div></section>
+
+  <!-- S3 -->
+  <section class="slide" data-i="3"><div class="slide-card card-light"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 02 — Resume du Projet</div><div class="s-title anim-item d2">Vue d'ensemble</div><div class="field f-lg anim-item d3" contenteditable="true" data-key="projectSummary" data-placeholder="Resume..." style="flex:1;"></div></div></section>
+
+  <!-- S4 -->
+  <section class="slide" data-i="4">
+    <div class="slide-card card-light">
+      <div class="blob blob-1"></div>
+      <div class="blob blob-2"></div>
+      <div class="badge anim-item d1"><span class="badge-dot"></span> 03 — L'Équipe</div>
+      <div class="s-title anim-item d2">L'ÉQUIPE</div>
+      <div class="s-subtitle anim-item d3">Présentation des membres</div>
+      
+      <div class="team-grid">
+        <!-- Membre 1 -->
+        <div class="t-card anim-item d4 no-border">
+          <div class="t-header">
+            <div class="t-avatar"><i class="fas fa-user"></i></div>
+            <div class="t-header-fields">
+              <div class="field f-sm t-name" contenteditable="true" data-key="team.0.name" data-placeholder="Nom Prénom">Belabiod Nourhène</div>
+              <div class="field f-sm t-profile" contenteditable="true" data-key="team.0.profile" data-placeholder="Profil">Étudiante en informatique (M2 WIC)</div>
+            </div>
+          </div>
+          <div class="t-divider"></div>
+          <div class="t-body">
+            <div>
+              <div class="t-body-label">Rôle au sein du projet</div>
+              <div class="field f-sm t-role-text" contenteditable="true" data-key="team.0.role" data-placeholder="Rôle...">Développement et recherche IA</div>
+            </div>
+            <div>
+              <div class="t-body-label">Compétences spécifiques</div>
+              <div class="field f-sm t-skill-text" contenteditable="true" data-key="team.0.skills" data-placeholder="Compétences...">Deep Learning (Images de fond d'œil), Flutter, Firebase</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Membre 2 -->
+        <div class="t-card anim-item d5 no-border">
+          <div class="t-header">
+            <div class="t-avatar"><i class="fas fa-user-tie"></i></div>
+            <div class="t-header-fields">
+              <div class="field f-sm t-name" contenteditable="true" data-key="team.1.name" data-placeholder="Nom Prénom">Dr. Bnebakreti Soumia</div>
+              <div class="field f-sm t-profile" contenteditable="true" data-key="team.1.profile" data-placeholder="Profil">MCA / Statistique et IA</div>
+            </div>
+          </div>
+          <div class="t-divider"></div>
+          <div class="t-body">
+            <div>
+              <div class="t-body-label">Rôle au sein du projet</div>
+              <div class="field f-sm t-role-text" contenteditable="true" data-key="team.1.role" data-placeholder="Rôle...">Direction de projet et modélisation</div>
+            </div>
+            <div>
+              <div class="t-body-label">Compétences spécifiques</div>
+              <div class="field f-sm t-skill-text" contenteditable="true" data-key="team.1.skills" data-placeholder="Compétences...">R&D, Encadrement scientifique, Statistiques</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  <!-- S5 -->
+  <section class="slide" data-i="5"><div class="slide-card card-dark"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 04 — Problematique Ciblee</div><div class="s-title anim-item d2">Quel est le probleme identifie ?</div><div class="field f-lg anim-item d3" contenteditable="true" data-key="problematicText" style="flex:1;"></div><div class="stat-grid" style="margin-top:16px;"><div class="stat-card anim-item d4 no-border"><div class="stat-icon"><i class="fas fa-user-doctor"></i></div><div class="stat-num field" contenteditable="true" data-key="stats.0.value" style="font-family:'Sora',sans-serif;font-size:38px;font-weight:900;padding:0;min-height:46px;border:none;border-bottom:none;-webkit-text-fill-color:transparent;background:linear-gradient(135deg,var(--azure),var(--cyan));-webkit-background-clip:text;background-clip:text;"></div><div class="field f-sm" contenteditable="true" data-key="stats.0.label"></div></div><div class="stat-card anim-item d5 no-border"><div class="stat-icon"><i class="fas fa-image"></i></div><div class="stat-num field" contenteditable="true" data-key="stats.1.value" style="font-family:'Sora',sans-serif;font-size:38px;font-weight:900;padding:0;min-height:46px;border:none;border-bottom:none;-webkit-text-fill-color:transparent;background:linear-gradient(135deg,var(--azure),var(--cyan));-webkit-background-clip:text;background-clip:text;"></div><div class="field f-sm" contenteditable="true" data-key="stats.1.label"></div></div><div class="stat-card anim-item d6 no-border"><div class="stat-icon"><i class="fas fa-eye-slash"></i></div><div class="stat-num field" contenteditable="true" data-key="stats.2.value" style="font-family:'Sora',sans-serif;font-size:38px;font-weight:900;padding:0;min-height:46px;border:none;border-bottom:none;-webkit-text-fill-color:transparent;background:linear-gradient(135deg,var(--azure),var(--cyan));-webkit-background-clip:text;background-clip:text;"></div><div class="field f-sm" contenteditable="true" data-key="stats.2.label"></div></div><div class="stat-card anim-item d7 no-border"><div class="stat-icon"><i class="fas fa-hospital"></i></div><div class="stat-num field" contenteditable="true" data-key="stats.3.value" style="font-family:'Sora',sans-serif;font-size:38px;font-weight:900;padding:0;min-height:46px;border:none;border-bottom:none;-webkit-text-fill-color:transparent;background:linear-gradient(135deg,var(--azure),var(--cyan));-webkit-background-clip:text;background-clip:text;"></div><div class="field f-sm" contenteditable="true" data-key="stats.3.label"></div></div></div></div></section>
+
+  <!-- S6 -->
+  <section class="slide" data-i="6"><div class="slide-card card-light"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 05 — La Solution Proposee</div><div class="s-title anim-item d2">Description de la solution</div><div class="field f-lg anim-item d3" contenteditable="true" data-key="solution" style="flex:1;"></div></div></section>
+
+  <!-- S7 -->
+  <section class="slide" data-i="7"><div class="slide-card card-dark"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 06 — Prototype</div><div class="s-title anim-item d2">Presentation du Prototype</div><div class="proto-list"><div class="proto-row anim-item d3 no-border"><i class="fas fa-video"></i><div class="field f-md" contenteditable="true" data-key="protoVideo" data-placeholder="Lien video"></div></div><div class="proto-row anim-item d4 no-border"><i class="fas fa-mobile-screen-button"></i><div class="field f-md" contenteditable="true" data-key="protoApk" data-placeholder="Lien APK"></div></div><div class="proto-row anim-item d5 no-border"><i class="fas fa-link"></i><div class="field f-md" contenteditable="true" data-key="protoWeb" data-placeholder="Lien site web"></div></div></div></div></section>
+
+  <!-- S8 -->
+  <section class="slide" data-i="8"><div class="slide-card card-light"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 07 — Propriete Intellectuelle</div><div class="s-title anim-item d2">Brevets, Marques et Droits</div><div class="ip-grid"><div class="ip-card anim-item d3 no-border"><div class="ip-ico"><i class="fas fa-certificate"></i></div><div class="ip-lbl">Brevets</div><div class="field f-sm" contenteditable="true" data-key="patents"></div></div><div class="ip-card anim-item d4 no-border"><div class="ip-ico"><i class="fas fa-trademark"></i></div><div class="ip-lbl">Marques et Designs</div><div class="field f-sm" contenteditable="true" data-key="trademarks"></div></div><div class="ip-card anim-item d5 no-border"><div class="ip-ico"><i class="fas fa-copyright"></i></div><div class="ip-lbl">Droits d'Auteur</div><div class="field f-sm" contenteditable="true" data-key="copyright"></div></div><div class="ip-card anim-item d6 no-border"><div class="ip-ico"><i class="fas fa-shield-halved"></i></div><div class="ip-lbl">Statut global</div><div class="field f-sm" contenteditable="true" data-key="piStatus"></div></div></div></div></section>
+
+  <!-- S9 -->
+  <section class="slide" data-i="9"><div class="slide-card card-dark"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 08 — Valeur Ajoutee</div><div class="s-title anim-item d2">Impact de la solution</div><div class="field f-lg anim-item d3" contenteditable="true" data-key="valueAdded" style="flex:1;"></div><div class="chip-row anim-item d4"><div class="chip"><i class="fas fa-bolt"></i> Diagnostic rapide</div><div class="chip"><i class="fas fa-shield-halved"></i> Reduction des erreurs</div><div class="chip"><i class="fas fa-universal-access"></i> Accessibilite</div><div class="chip"><i class="fas fa-eye"></i> Prevention cecite</div><div class="chip"><i class="fas fa-stethoscope"></i> Triage medical</div><div class="chip"><i class="fas fa-brain"></i> Deep Learning</div></div></div></section>
+
+  <!-- S10 -->
+  <section class="slide" data-i="10"><div class="slide-card card-light"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 09 — Analyse Concurrentielle</div><div class="s-title anim-item d2">Analyse de la concurrence</div><div style="position:relative;z-index:2;flex:1;display:flex;flex-direction:column;gap:10px;"><div class="comp-list anim-item d3 no-border"><div class="comp-row"><div class="comp-pip"></div><div class="field f-sm" contenteditable="true" data-key="competitors.0"></div></div><div class="comp-row"><div class="comp-pip"></div><div class="field f-sm" contenteditable="true" data-key="competitors.1"></div></div><div class="comp-row"><div class="comp-pip" style="background:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,.3);"></div><div class="field f-sm" contenteditable="true" data-key="competitors.2"></div></div><div class="comp-row"><div class="comp-pip" style="background:var(--cyan);box-shadow:0 0 8px rgba(34,211,238,.3);"></div><div class="field f-sm" contenteditable="true" data-key="competitors.3"></div></div></div><div class="swot-grid anim-item d4 no-border"><div class="swot-box sw-s"><div class="swot-label"><i class="fas fa-arrow-up"></i> Forces</div><div class="field f-sm" contenteditable="true" data-key="strengths"></div></div><div class="swot-box sw-w"><div class="swot-label"><i class="fas fa-arrow-down"></i> Faiblesses</div><div class="field f-sm" contenteditable="true" data-key="weaknesses"></div></div><div class="swot-box sw-o"><div class="swot-label"><i class="fas fa-star"></i> Opportunites</div><div class="field f-sm" contenteditable="true" data-key="opportunities"></div></div><div class="swot-box sw-t"><div class="swot-label"><i class="fas fa-triangle-exclamation"></i> Menaces</div><div class="field f-sm" contenteditable="true" data-key="threats"></div></div></div><div class="diff-box anim-item d5 no-border"><div class="field f-md" contenteditable="true" data-key="differentiation"></div></div></div></div></section>
+
+  <!-- S11 -->
+  <section class="slide" data-i="11"><div class="slide-card card-dark"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 10 — Marche Cible</div><div class="s-title anim-item d2">Cible principale</div><div style="position:relative;z-index:2;flex:1;display:flex;flex-direction:column;gap:16px;"><div class="mkt-segs anim-item d3 no-border"><div class="mkt-seg"><i class="fas fa-users mkt-ico"></i><div class="mkt-lbl">Clients</div><div class="field f-sm" contenteditable="true" data-key="clients"></div></div><div class="mkt-seg"><i class="fas fa-user-check mkt-ico"></i><div class="mkt-lbl">Utilisateurs</div><div class="field f-sm" contenteditable="true" data-key="users"></div></div><div class="mkt-seg"><i class="fas fa-heart mkt-ico"></i><div class="mkt-lbl">Beneficiaires</div><div class="field f-sm" contenteditable="true" data-key="beneficiaries"></div></div></div><div class="field f-lg anim-item d4" contenteditable="true" data-key="marketSize" style="flex:1;"></div></div></div></section>
+
+  <!-- S12 -->
+  <section class="slide" data-i="12"><div class="slide-card card-light"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 11 — Modele Economique</div><div class="s-title anim-item d2">Business Model</div><div style="position:relative;z-index:2;flex:1;display:flex;flex-direction:column;gap:16px;"><div class="bm-grid anim-item d3 no-border"><div class="bm-card"><i class="fas fa-money-bill-wave bm-ico"></i><div class="bm-lbl">Revenus</div><div class="field f-sm" contenteditable="true" data-key="revenues"></div></div><div class="bm-card"><i class="fas fa-bullseye bm-ico"></i><div class="bm-lbl">Monetisation</div><div class="field f-sm" contenteditable="true" data-key="monetization"></div></div><div class="bm-card"><i class="fas fa-scale-balanced bm-ico"></i><div class="bm-lbl">Couts</div><div class="field f-sm" contenteditable="true" data-key="costs"></div></div></div><div class="field f-lg anim-item d4" contenteditable="true" data-key="businessModel" style="flex:1;"></div></div></div></section>
+
+  <!-- S13 -->
+  <section class="slide" data-i="13"><div class="slide-card card-dark"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 12 — Roadmap</div><div class="s-title anim-item d2">Feuille de route du projet</div><div style="position:relative;z-index:2;flex:1;display:flex;flex-direction:column;gap:14px;"><div class="timeline anim-item d3 no-border"><div class="tl-item"><div class="tl-dot"></div><div class="tl-lbl">6 mois</div><div class="field f-sm" contenteditable="true" data-key="roadmap6m"></div></div><div class="tl-item"><div class="tl-dot" style="background:var(--cyan);box-shadow:0 0 12px rgba(34,211,238,.35);"></div><div class="tl-lbl">1 an</div><div class="field f-sm" contenteditable="true" data-key="roadmap1y"></div></div><div class="tl-item"><div class="tl-dot" style="background:var(--aqua);box-shadow:0 0 12px rgba(103,232,249,.35);"></div><div class="tl-lbl">3 ans</div><div class="field f-sm" contenteditable="true" data-key="roadmap3y"></div></div></div><div class="res-box anim-item d4 no-border"><div class="res-lbl">Ressources necessaires</div><div class="field f-md" contenteditable="true" data-key="resources"></div></div></div></div></section>
+
+  <!-- S14 -->
+  <section class="slide" data-i="14"><div class="slide-card card-dark" style="justify-content:center;"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="blob blob-3"></div><div class="ty-wrap"><div class="ty-title anim-item d1">MERCI</div><div class="ty-sub anim-item d2">Merci pour votre attention. Nous sommes a votre disposition pour toute question complementaire.</div><div class="anim-item d3" style="display:flex;gap:20px;font-size:12px;color:var(--azure);opacity:.45;margin-top:4px;"><span><i class="fas fa-envelope" style="margin-right:6px;"></i><span class="field f-sm" contenteditable="true" data-key="thankYouEmail" style="border:none;border-bottom:none;padding:0;min-height:auto;display:inline;font-size:inherit;opacity:inherit;"></span></span><span><i class="fas fa-phone" style="margin-right:6px;"></i><span class="field f-sm" contenteditable="true" data-key="thankYouPhone" style="border:none;border-bottom:none;padding:0;min-height:auto;display:inline;font-size:inherit;opacity:inherit;"></span></span></div></div></div></section>
+</main>
+
+<div class="sidepills" id="sidepills"></div>
+<nav class="bottomnav" aria-label="Navigation">
+  <button class="bn-btn" id="prevBtn" onclick="goTo(cur-1)" aria-label="Precedent" disabled><i class="fas fa-chevron-left"></i></button>
+  <div class="bn-dots" id="dots"></div>
+  <div class="bn-counter" id="counter">1 / 15</div>
+  <button class="bn-btn" id="nextBtn" onclick="goTo(cur+1)" aria-label="Suivant"><i class="fas fa-chevron-right"></i></button>
+</nav>
+
+<script>
+/* ___PROJECT_DATA_START___ */
+const PROJECT_DATA = {
+"logo": "https://i.postimg.cc/wjD8NK8W/LOGO-AINDETECT.png",
+  "projectName": "AinDetect",
+  "projectTagline": "Une vision plus claire pour un avenir plus sain.",
+  "contactName": "Bnebakreti Soumia",
+  "contactRole": "DR /Grade :MCA / Specialite: Statistique et Applications en Informatique",
+  "contactEmail": "souben2212@gmail.com",
+  "contactPhone": "",
+  "contactWebsite": "",
+  "contactSocial": "",
+"projectSummary": "Résumé :\n\n**AinDetect est un outil de diagnostic intelligent qui automatise le dépistage des maladies de la rétine par Deep Learning. Conçue pour les professionnels de santé, cette application mobile transforme l'imagerie du fond d'œil en une analyse précise et immédiate pour prévenir la cécité évitable.\n\nProblématique :\n\n**Le dépistage des maladies de la rétine est freiné par le manque d'ophtalmologues disponibles et par la difficulté d'analyser manuellement de très grandes quantités d'images complexes, ce qui retarde la prise en charge des patients.\n\nSolution :\n\n**Nous avons développé AinDetect, une application mobile sous Flutter qui utilise le Deep Learning pour interpréter automatiquement les images de fond d'œil. Elle permet aux médecins d'obtenir un diagnostic préliminaire précis et instantané à partir d'un simple cliché numérique.\n\nImpact :\n\n**Cette solution optimise le triage médical en identifiant rapidement les cas urgents, tout en réduisant le risque d'erreur humaine. Elle rend le dépistage précoce plus accessible, contribuant ainsi directement à la lutte contre la cécité évitable.",
+"team": [
+    { "name": "Belabiod Nourhene", "profile": "Etudiante en informatique", "role": "Developpement et recherche", "skills": "Traitement d'images, Python, Deep Learning, Flutter" },
+    { "name": "Bnebakreti Soumia", "profile": "MCA / Statistique et Applications en Informatique", "role": "Direction de projet et modelisation statistique", "skills": "Statistiques, Machine Learning,  encadrement scientifique" },
+    
+  ],
+  "problematicText": "Le depistage des maladies de la retine est freine par le manque d'ophtalmologues disponibles et par la difficulte d'analyser manuellement de tres grandes quantites d'images complexes, ce qui retarde la prise en charge des patients.",
+  "stats": [
+    { "value": "80%", "label": "Zones rurales sans ophtalmologue" },
+    { "value": "30min+", "label": "Temps moyen d'analyse manuelle par image" },
+    { "value": "2.2M", "label": "Cas de cecite evitable par an dans le monde" },
+    { "value": "90%+", "label": "Precision attendue du diagnostic par IA" }
+  ],
+"solution": "**AinDetect est une solution de santé mobile intelligente qui automatise le dépistage des pathologies rétiniennes à partir de photos de fond d’œil.** Conçue sous Flutter, elle intègre directement des modèles de Deep Learning pour fournir une analyse instantanée et fiable au cabinet médical ou en déplacement.\n\n**Originalité**\n\n* **Mobilité Totale :** Contrairement aux logiciels classiques sur ordinateurs fixes, AinDetect transforme n'importe quel smartphone en un outil de diagnostic portable.\n* **Hybridation Technologique :** L'application combine la puissance du Cloud pour le stockage sécurisé (Firebase) et l'efficacité de l'IA embarquée pour un traitement local rapide.\n* **Accessibilité :** Elle est conçue pour fonctionner avec des adaptateurs optiques mobiles, rendant le dépistage possible hors des centres spécialisés.\n\n**Efficacité**\n\n* **Précision Chirurgicale :** L'IA détecte des signes cliniques (micro-anévrismes, exsudats) parfois difficiles à percevoir à l'œil nu lors d'un examen rapide.\n* **Vitesse d'Exécution :** Le processus d'analyse prend moins de 10 secondes, permettant de filtrer les patients en temps réel.\n* **Réduction des Coûts :** En facilitant le triage précoce, la solution limite les complications coûteuses liées aux diagnostics tardifs.",  
+"protoVideo": "",
+  "protoApk": "",
+  "protoWeb": "",
+  "patents": "",
+  "trademarks": "",
+  "copyright": "",
+  "piStatus": "",
+"valueAdded": "1. Gain de Temps Majeur\n\n⚡ Analyse Instantanée : Le diagnostic automatisé réduit le temps d'interprétation de 15 minutes à quelques secondes.\n🔍 Optimisation du Flux : Permet de traiter plus de patients en se focalisant sur les cas pathologiques identifiés par l'IA.\n\n2. Économies et Réduction des Coûts\n\n📱 Réduction du Matériel : Utilisation d'un smartphone et d'un adaptateur au lieu de stations de travail coûteuses.\n💰 Santé Publique : Le dépistage précoce coûte moins cher que la prise en charge d'une cécité avancée.\n\n3. Innovation Technologique\n\n🧠 IA de Pointe : Accès à la puissance du Deep Learning sans expertise informatique complexe.\n☁️ Suivi Numérique : Suivi historique via Firebase pour comparer l'évolution de la rétine digitalement.\n\n4. Impact Social et Humain\n\n📍 Déserts Médicaux : Expertise de spécialiste apportée dans les zones reculées dépourvues d'ophtalmologues.\n🛡️ Fiabilité Accrue : Réduction du risque d'erreur grâce au « deuxième avis » systématique de l'algorithme.\n\n5. Impact Environnemental\n\n🌿 Dématérialisation : Zéro papier ; tous les clichés et rapports sont stockés sur l'application.\n🚗 Mobilité Verte : Moins de trajets vers les centres urbains, réduisant l'empreinte carbone globale.",
+"competitors": [
+    "IDx-DR (USA) - Diagnostic automatique de la retinopathie diabetique",
+    "Retinalyze AI (Suede) - Depistage par IA des maladies oculaires",
+    "EyeArt (USA) - Detection de la retinopathie diabetique par Deep Learning",
+    "Google Health / DeepMind - Systeme de depistage oculaire par IA"
+  ],
+  "strengths": "Technologie Deep Learning performante, application mobile accessible sans equipement couteux, diagnostic rapide et precis, adaptee au contexte algerien et africain",
+  "weaknesses": "Dependance a la qualite des images d'entree, besoin de donnees d'entrainement medicalles specifiques, absence de certification medicale actuelle",
+  "opportunities": "Forte demande de telemdecine en zones rurales, croissance du marche de l'IA en sante, soutien gouvernemental aux startups innovantes, extension possible a d'autres pathologies oculaires",
+  "threats": "Concurrence de solutions internationales deja certifiees, contraintes reglementaires medicales strictes, difficulte d'acces aux donnees medicales, obsolescence rapide des modeles d'IA",
+  "differentiation": "AinDetect se differencie par son adaptation au contexte local algerien et africain, sa simplicite d'utilisation sur mobile sans equipement specialise, et son cout reduit par rapport aux solutions internationales couteuses. Contrairement aux concurrents, elle est concue des le depart pour fonctionner dans des environnements a faibles ressources.",
+  "clients": "Etablissements de sante publics et prives, hopitaux, cliniques ophtalmologiques, centres de depistage",
+  "users": "Ophtalmologues, medecins generalistes, infirmiers ophtalmologiques, agents de sante communautaires",
+  "beneficiaries": "Patients a risque de maladies retiniennes (diabetiques, hypertends, personnes agees), populations en zones rurales isolees",
+  "marketSize": "Le marche mondial de l'IA en ophtalmologie est estime a 1.8 milliard de dollars en 2024, avec une croissance annuelle de 22%. En Algerie, le marche de la telemedecine est en pleine expansion avec un besoin critique de solutions de depistage dans les zones rurales ou plus de 80% de la population n'a pas acces a un ophtalmologue.",
+  "revenues": "Vente de licences d'utilisation aux etablissements de sante, abonnements mensuels/annuels pour l'acces a la plateforme",
+  "monetization": "B2B - Vente directe aux hopitaux, cliniques et centres de sante. Model SaaS avec abonnement par etablissement.",
+  "costs": "R&D (developpement Flutter + entrainement modele IA), infrastructure cloud GPU, acquisition et annotation de donnees medicales, maintenance et mises a jour, certification medicale",
+  "businessModel": "AinDetect genere des revenus par la vente de licences d'utilisation aux etablissements de sante sous forme d'abonnement. Le modele SaaS permet un revenu recurrent avec un cout marginal faible par nouveau client. La rentabilite est atteinte une fois le modele IA valide et certifie, grace a la faiblesse des couts de distribution digitale compares aux solutions materielles concurrentes.",
+  "roadmap6m": "Finalisation de la collecte et annotation des images de fond d'oeil, entrainement et optimisation du modele Deep Learning, developpement du prototype complet sous Flutter, premiers tests internes",
+  "roadmap1y": "Validation clinique avec des ophtalmologues partenaires, tests pilotes en conditions reelles dans 3 a 5 cliniques, amelioration du modele base sur les retours, preparation du dossier de certification",
+  "roadmap3y": "Certification medicale et deploiement national a grande echelle, extension a d'autres pathologies oculaires (glaucome, DMLA), expansion regionale en Afrique du Nord et subsaharienne, partenariats avec le ministere de la Sante",
+  "resources": "Equipe : developpeurs Flutter (2), data scientists (2), ophtalmologues consultants (2), designer UI/UX (1). Infrastructure : serveurs cloud GPU pour l'entrainement, base de donnees medicalles annotees (minimum 5000 images). Budget : financement initial pour  la validation clinique.",
+  "thankYouEmail": "nourhenebelabiod@gmail.com",
+  "thankYouPhone": ""
+};
+/* ___PROJECT_DATA_END___ */
+
+function getData(k){const p=k.split('.');let v=PROJECT_DATA;for(const x of p){if(v==null)return'';v=v[x]}return v||''}
+function setData(k,v){const p=k.split('.');let o=PROJECT_DATA;for(let i=0;i<p.length-1;i++)o=o[p[i]];o[p[p.length-1]]=v}
+function populateFields(){document.querySelectorAll('[data-key]').forEach(el=>{const v=getData(el.getAttribute('data-key'));if(v)el.textContent=v});if(PROJECT_DATA.logo){const i=document.getElementById('logoPreview'),c=document.getElementById('logoIcon'),t=document.getElementById('logoText');if(i){i.src=PROJECT_DATA.logo;i.style.display='block'}if(c)c.style.display='none';if(t)t.style.display='none'}}
+function syncFromDOM(){document.querySelectorAll('[data-key]').forEach(el=>setData(el.getAttribute('data-key'),el.textContent.trim()));const i=document.getElementById('logoPreview');PROJECT_DATA.logo=(i&&i.style.display!=='none'&&i.src)?i.src:''}
+document.addEventListener('input',e=>{if(e.target.isContentEditable&&e.target.hasAttribute('data-key'))setData(e.target.getAttribute('data-key'),e.target.textContent.trim())});
+function handleLogo(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{const i=document.getElementById('logoPreview'),c=document.getElementById('logoIcon'),t=document.getElementById('logoText');i.src=ev.target.result;i.style.display='block';if(c)c.style.display='none';if(t)t.style.display='none';PROJECT_DATA.logo=ev.target.result;toast('Logo ajoute')};r.readAsDataURL(f)}
+function saveToCode(){syncFromDOM();const s=JSON.stringify(PROJECT_DATA,null,2);let h='<!DOCTYPE html>\n'+document.documentElement.outerHTML;const rx=/\/\* ___PROJECT_DATA_START___ \*\/[\s\S]*?\/\* ___PROJECT_DATA_END___ \*\//;const nb='/* ___PROJECT_DATA_START___ */\nconst PROJECT_DATA = '+s+';\n/* ___PROJECT_DATA_END___ */';if(rx.test(h))h=h.replace(rx,nb);else{toast('Erreur');return}const b=new Blob([h],{type:'text/html;charset=utf-8'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='pitch-deck-aindetect.html';document.body.appendChild(a);a.click();document.body.removeChild(a);URL.revokeObjectURL(a.href);toast('Fichier sauvegarde')}
+const canvas=document.getElementById('bgCanvas'),ctx=canvas.getContext('2d');let W,H,blobs=[];
+function resize(){W=canvas.width=window.innerWidth;H=canvas.height=window.innerHeight}resize();window.addEventListener('resize',resize);
+class B{constructor(){this.x=Math.random()*W;this.y=Math.random()*H;this.r=100+Math.random()*200;this.vx=(Math.random()-.5)*.25;this.vy=(Math.random()-.5)*.25;this.h=[192,198,204,188,185][Math.floor(Math.random()*5)];this.a=.025+Math.random()*.035}update(){this.x+=this.vx;this.y+=this.vy;if(this.x<-this.r)this.x=W+this.r;if(this.x>W+this.r)this.x=-this.r;if(this.y<-this.r)this.y=H+this.r;if(this.y>H+this.r)this.y=-this.r}draw(){const g=ctx.createRadialGradient(this.x,this.y,0,this.x,this.y,Math.max(1,this.r));g.addColorStop(0,`hsla(${this.h},80%,50%,${this.a})`);g.addColorStop(1,`hsla(${this.h},80%,50%,0)`);ctx.fillStyle=g;ctx.beginPath();ctx.arc(this.x,this.y,Math.max(1,this.r),0,Math.PI*2);ctx.fill()}}
+for(let i=0;i<7;i++)blobs.push(new B);let pts=[];class P{constructor(){this.reset()}reset(){this.x=Math.random()*W;this.y=H+10;this.r=.8+Math.random()*1.5;this.vy=-(.2+Math.random()*.6);this.vx=(Math.random()-.5)*.15;this.a=.15+Math.random()*.3;this.l=0;this.m=300+Math.random()*400}update(){this.x+=this.vx;this.y+=this.vy;this.l++;if(this.l>this.m||this.y<-10)this.reset()}draw(){const a=this.a*(1-this.l/this.m);ctx.fillStyle=`rgba(56,189,248,${a})`;ctx.beginPath();ctx.arc(this.x,this.y,Math.max(.5,this.r),0,Math.PI*2);ctx.fill()}}
+for(let i=0;i<50;i++){const p=new P();p.y=Math.random()*H;p.l=Math.random()*p.m;pts.push(p)}
+function drawLines(){for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const dx=pts[i].x-pts[j].x,dy=pts[i].y-pts[j].y,d=Math.sqrt(dx*dx+dy*dy);if(d<110){ctx.strokeStyle=`rgba(56,189,248,${(1-d/110)*.06})`;ctx.lineWidth=.5;ctx.beginPath();ctx.moveTo(pts[i].x,pts[i].y);ctx.lineTo(pts[j].x,pts[j].y);ctx.stroke()}}}
+function animate(){ctx.clearRect(0,0,W,H);blobs.forEach(b=>{b.update();b.draw()});pts.forEach(p=>{p.update();p.draw()});drawLines();requestAnimationFrame(animate)}animate();
+let cur=0;const slides=document.querySelectorAll('.slide'),total=slides.length;
+function goTo(i) {
+    if (i < 0 || i >= total || i === cur) return;
+
+    // Désactive la slide actuelle
+    slides[cur].classList.remove('active');
+    
+    // Reset des animations pour qu'elles se rejouent au retour
+    slides[cur].querySelectorAll('.anim-item').forEach(el => {
+        el.style.opacity = '0';
+        el.style.animation = 'none';
+    });
+
+    // Change l'index
+    cur = i;
+
+    // Active la nouvelle slide
+    slides[cur].classList.add('active');
+    
+    // Force le navigateur à recalculer le style pour relancer les animations CSS
+    void slides[cur].offsetWidth; 
+    
+    slides[cur].querySelectorAll('.anim-item').forEach((el, index) => {
+        el.style.opacity = '';
+        el.style.animation = '';
+    });
+
+    updateNav(); // Très important pour débloquer le bouton Précédent
+}
+function updateNav() {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+
+    // Si on est à la première slide, disabled = true. Sinon, false.
+    if (prevBtn) prevBtn.disabled = (cur === 0);
+    
+    // Si on est à la dernière slide, disabled = true.
+    if (nextBtn) nextBtn.disabled = (cur === total - 1);
+
+    // Mise à jour du reste de l'UI
+    document.getElementById('counter').textContent = `${cur + 1} / ${total}`;
+    document.getElementById('progressFill').style.width = `${((cur + 1) / total) * 100}%`;
+    
+    // Mise à jour visuelle des points (dots)
+    document.querySelectorAll('.bn-dot').forEach((d, i) => d.classList.toggle('on', i === cur));
+}
+const dotsEl=document.getElementById('dots');for(let i=0;i<total;i++){const d=document.createElement('button');d.className='bn-dot'+(i===0?' on':'');d.setAttribute('aria-label',`Slide ${i+1}`);d.onclick=()=>goTo(i);dotsEl.appendChild(d)}
+const spEl=document.getElementById('sidepills');for(let i=0;i<total;i++){const s=document.createElement('div');s.className='sp'+(i===0?' on':'');s.textContent=i+1;s.onclick=()=>goTo(i);spEl.appendChild(s)}
+document.addEventListener('keydown',e=>{if(e.target.isContentEditable)return;if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' '){e.preventDefault();goTo(cur+1)}if(e.key==='ArrowLeft'||e.key==='ArrowUp'){e.preventDefault();goTo(cur-1)}if(e.key==='Home'){e.preventDefault();goTo(0)}if(e.key==='End'){e.preventDefault();goTo(total-1)}if(e.key==='f'||e.key==='F')toggleFS()});
+let sx=0,sy=0;document.addEventListener('touchstart',e=>{if(e.target.isContentEditable)return;sx=e.changedTouches[0].screenX;sy=e.changedTouches[0].screenY},{passive:true});document.addEventListener('touchend',e=>{if(e.target.isContentEditable)return;const dx=e.changedTouches[0].screenX-sx,dy=e.changedTouches[0].screenY-sy;if(Math.abs(dx)>Math.abs(dy)&&Math.abs(dx)>50){dx<0?goTo(cur+1):goTo(cur-1)}},{passive:true});
+let wl=false;document.addEventListener('wheel',e=>{if(e.target.isContentEditable||wl)return;wl=true;e.deltaY>0?goTo(cur+1):goTo(cur-1);setTimeout(()=>wl=false,700)},{passive:true});
+function toggleFS(){if(!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});else document.exitFullscreen()}
+function toast(m){const t=document.getElementById('toast');document.getElementById('toastTxt').textContent=m;t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2800)}
+populateFields();updateNav();
+</script>
+</body>
+</html>
