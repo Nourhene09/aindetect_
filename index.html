@@ -355,7 +355,44 @@
   <section class="slide" data-i="6"><div class="slide-card card-light"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 05 — La Solution Proposee</div><div class="s-title anim-item d2">Description de la solution</div><div class="field f-lg anim-item d3" contenteditable="true" data-key="solution" style="flex:1;"></div></div></section>
 
   <!-- S7 -->
-  <section class="slide" data-i="7"><div class="slide-card card-dark"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 06 — Prototype</div><div class="s-title anim-item d2">Presentation du Prototype</div><div class="proto-list"><div class="proto-row anim-item d3 no-border"><i class="fas fa-video"></i><div class="field f-md" contenteditable="true" data-key="protoVideo" data-placeholder="Lien video"></div></div><div class="proto-row anim-item d4 no-border"><i class="fas fa-mobile-screen-button"></i><div class="field f-md" contenteditable="true" data-key="protoApk" data-placeholder="Lien APK"></div></div><div class="proto-row anim-item d5 no-border"><i class="fas fa-link"></i><div class="field f-md" contenteditable="true" data-key="protoWeb" data-placeholder="Lien site web"></div></div></div></div></section>
+<section class="slide" data-i="7">
+  <div class="slide-card card-dark">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="badge anim-item d1"><span class="badge-dot"></span> 06 — Prototype</div>
+    <div class="s-title anim-item d2">Presentation du Prototype</div>
+    
+    <div class="proto-list">
+      
+      <!-- Vidéo -->
+      <div class="proto-row anim-item d3 no-border" style="display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-video"></i>
+        <!-- J'ai ajouté un ID 'link-video' pour pouvoir le cibler -->
+        <div class="field f-md" contenteditable="true" data-key="protoVideo" data-placeholder="Lien video" id="link-video" style="flex: 1;"></div>
+        <!-- Bouton pour ouvrir la vidéo -->
+        <button onclick="window.open(document.getElementById('link-video').innerText.trim(), '_blank')" 
+                style="background: rgba(34, 211, 238, 0.1); color: var(--cyan); border: 1px solid rgba(34, 211, 238, 0.3); padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;" 
+                title="Ouvrir la vidéo">
+          <i class="fas fa-external-link-alt"></i>
+        </button>
+      </div>
+      
+      <!-- APK -->
+      <div class="proto-row anim-item d4 no-border" style="display: flex; align-items: center; gap: 10px;">
+        <i class="fas fa-mobile-screen-button"></i>
+        <!-- J'ai ajouté un ID 'link-apk' pour pouvoir le cibler -->
+        <div class="field f-md" contenteditable="true" data-key="protoApk" data-placeholder="Lien APK" id="link-apk" style="flex: 1;"></div>
+        <!-- Bouton pour télécharger l'APK -->
+        <button onclick="window.open(document.getElementById('link-apk').innerText.trim(), '_blank')" 
+                style="background: rgba(34, 211, 238, 0.1); color: var(--cyan); border: 1px solid rgba(34, 211, 238, 0.3); padding: 8px 12px; border-radius: 8px; cursor: pointer; display: flex; align-items: center; justify-content: center;" 
+                title="Télécharger l'APK">
+          <i class="fas fa-download"></i>
+        </button>
+      </div>
+
+    </div>
+  </div>
+</section>
 
   <!-- S8 -->
   <section class="slide" data-i="8"><div class="slide-card card-light"><div class="blob blob-1"></div><div class="blob blob-2"></div><div class="badge anim-item d1"><span class="badge-dot"></span> 07 — Propriete Intellectuelle</div><div class="s-title anim-item d2">Brevets, Marques et Droits</div><div class="ip-grid"><div class="ip-card anim-item d3 no-border"><div class="ip-ico"><i class="fas fa-certificate"></i></div><div class="ip-lbl">Brevets</div><div class="field f-sm" contenteditable="true" data-key="patents"></div></div><div class="ip-card anim-item d4 no-border"><div class="ip-ico"><i class="fas fa-trademark"></i></div><div class="ip-lbl">Marques et Designs</div><div class="field f-sm" contenteditable="true" data-key="trademarks"></div></div><div class="ip-card anim-item d5 no-border"><div class="ip-ico"><i class="fas fa-copyright"></i></div><div class="ip-lbl">Droits d'Auteur</div><div class="field f-sm" contenteditable="true" data-key="copyright"></div></div><div class="ip-card anim-item d6 no-border"><div class="ip-ico"><i class="fas fa-shield-halved"></i></div><div class="ip-lbl">Statut global</div><div class="field f-sm" contenteditable="true" data-key="piStatus"></div></div></div></div></section>
@@ -434,9 +471,8 @@ const PROJECT_DATA = {
     { "value": "90%+", "label": "Precision attendue du diagnostic par IA" }
   ],
 "solution": "**AinDetect est une solution de santé mobile intelligente qui automatise le dépistage des pathologies rétiniennes à partir de photos de fond d’œil.** Conçue sous Flutter, elle intègre directement des modèles de Deep Learning pour fournir une analyse instantanée et fiable au cabinet médical ou en déplacement.\n\n**Originalité**\n\n* **Mobilité Totale :** Contrairement aux logiciels classiques sur ordinateurs fixes, AinDetect transforme n'importe quel smartphone en un outil de diagnostic portable.\n* **Hybridation Technologique :** L'application combine la puissance du Cloud pour le stockage sécurisé (Firebase) et l'efficacité de l'IA embarquée pour un traitement local rapide.\n* **Accessibilité :** Elle est conçue pour fonctionner avec des adaptateurs optiques mobiles, rendant le dépistage possible hors des centres spécialisés.\n\n**Efficacité**\n\n* **Précision Chirurgicale :** L'IA détecte des signes cliniques (micro-anévrismes, exsudats) parfois difficiles à percevoir à l'œil nu lors d'un examen rapide.\n* **Vitesse d'Exécution :** Le processus d'analyse prend moins de 10 secondes, permettant de filtrer les patients en temps réel.\n* **Réduction des Coûts :** En facilitant le triage précoce, la solution limite les complications coûteuses liées aux diagnostics tardifs.",  
-"protoVideo": "",
-  "protoApk": "",
-  "protoWeb": "",
+"protoVideo": "https://youtu.be/eMJJ1mIHfCI",
+  "protoApk": "https://github.com/Nourhene09/aindetect/releases/download/v1.1.0/AinDetect.apk",
   "patents": "",
   "trademarks": "",
   "copyright": "",
